@@ -12,9 +12,13 @@ class User extends Sequelize.Model {
           type: Sequelize.STRING(200),
           allowNull: false,
         },
+        name: {
+            type: Sequelize.STRING(50),
+            allowNull: false,
+          },
         mbti: {
           type: Sequelize.STRING(50),
-          allowNull: false,
+          allowNull: true,
         }
       },
       {
