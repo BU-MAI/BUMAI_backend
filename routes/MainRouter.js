@@ -63,4 +63,29 @@ router.post('/signin', async (req, res) => {
   }
 });
 
+//result
+router.post('/result', validateToken, async (req, res) => {
+    const { mbti } = req.body; // JSON 요청에서 mbti 값을 추출합니다.
+    const userid = req.user.name; // 객체로 저장한 디코딩 값을 저장합니다.
+
+    console.log(mbti)
+    console.log(userid)
+  
+    try {
+      // User 테이블에서 Id가 userid인 사용자를 조회합니다.
+      const user = await User.findOne({ Id: userid });
+  
+      // 조회한 사용자의 mbti 값을 업데이트합니다.
+      user.mbti = mbti;
+      await user.save();
+  
+      // 응답으로 성공 메시지를 보냅니다.
+      res.json({ message: 'mbti가 업데이트되었습니다.' });
+    } catch (error) {
+      // 에러가 발생한 경우 에러 메시지를 보냅니다.
+      res.status(500).json({ error: '서버 오류입니다.' });
+    }
+  });
+
+  
 module.exports = router;
