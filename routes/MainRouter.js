@@ -87,5 +87,19 @@ router.post('/result', validateToken, async (req, res) => {
     }
   });
 
+  router.get('/rank', validateToken, async (req, res) => {
+    try {
+      const users = await User.findAll({
+        attributes: ['mbti', [Sequelize.fn('COUNT', Sequelize.col('mbti')), 'count']],
+        group: 'mbti',
+        order: [[Sequelize.literal('count'), 'DESC']],
+      });
   
+      res.status(200).json(users);
+    } catch (error) {
+      // 에러 처리
+      res.status(500).json({ message: '서버 오류가 발생했습니다.' });
+    }
+  });
+
 module.exports = router;
