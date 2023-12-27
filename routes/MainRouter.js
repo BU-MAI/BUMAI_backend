@@ -104,7 +104,7 @@ router.post('/result', validateToken, async (req, res) => {
 
   router.get('/main', validateToken, async (req, res) => {
     try {
-    res.status(200).json('로그인 상태입니다');
+    res.status(200).json({ message: '로그인 상태입니다.' });
     } catch (error) {
       // 에러 처리
       res.status(500).json({ message: '서버 오류가 발생했습니다.' });
