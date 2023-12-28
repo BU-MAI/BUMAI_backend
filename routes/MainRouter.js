@@ -3,7 +3,7 @@ const User = require("../models/User");
 const router = express.Router();
 const bcrypt = require('bcrypt');
 const { sign } = require('jsonwebtoken');
-const { validateToken } = require('../middleware/AuthMiddleware');
+const { validateToken } = require('../middleware/Authmiddleware');
 const { Sequelize, Op } = require('sequelize');
 require("dotenv").config();
 
@@ -66,7 +66,7 @@ router.post('/signin', async (req, res) => {
 //result
 router.post('/result', validateToken, async (req, res) => {
     const { mbti } = req.body; // JSON 요청에서 mbti 값을 추출합니다.
-    const userid = req.user.name; // 객체로 저장한 디코딩 값을 저장합니다.
+    const userid =   req.user.name; // 객체로 저장한 디코딩 값을 저장합니다.
 
     console.log(mbti)
     console.log(userid)
@@ -80,7 +80,7 @@ router.post('/result', validateToken, async (req, res) => {
       await user.save();
   
       // 응답으로 성공 메시지를 보냅니다.
-      res.json({ message: 'mbti가 업데이트되었습니다.' });
+      res.status(200).json({ message: 'mbti가 업데이트되었습니다.' });
     } catch (error) {
       // 에러가 발생한 경우 에러 메시지를 보냅니다.
       res.status(500).json({ error: '서버 오류입니다.' });
