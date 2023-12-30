@@ -55,7 +55,7 @@ router.post('/signin', async (req, res) => {
         { id: user.Id, name: user.name },
         'importantsecret'
     ); //accessToken 만듬
-    res.status(200).json({ message: '로그인이 성공적으로 완료되었습니다.', accessToken: accessToken }); 
+    res.status(200).json({ message: '로그인이 성공적으로 완료되었습니다.', accessToken: accessToken, id: Id }); 
   } catch (error) {
     // 오류 처리
     console.error(error);
@@ -67,9 +67,8 @@ router.post('/signin', async (req, res) => {
 router.post('/result', validateToken, async (req, res) => {
     const { mbti } = req.body; // JSON 요청에서 mbti 값을 추출합니다.
     const userid =   req.user.name; // 객체로 저장한 디코딩 값을 저장합니다.
-
-    console.log(mbti)
-    console.log(userid)
+    // console.log(mbti)
+    // console.log(userid)
   
     try {
       // User 테이블에서 Id가 userid인 사용자를 조회합니다.
