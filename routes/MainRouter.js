@@ -72,8 +72,8 @@ router.post('/result', validateToken, async (req, res) => {
   
     try {
       // User 테이블에서 Id가 userid인 사용자를 조회합니다.
-      const user = await User.findOne({ Id: userid });
-  
+      const user = await User.findOne({ where: { Id: userid } });
+
       // 조회한 사용자의 mbti 값을 업데이트합니다.
       user.mbti = mbti;
       await user.save();

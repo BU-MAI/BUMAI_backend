@@ -4,9 +4,16 @@ const { sequelize } = require("./models");
 const MainRouter = require("./routes/MainRouter");
 
 const app = express();
-app.use(cors());
+// app.use(
+// 	cors({
+// 		origin: 'https://simpleblog-ambition.netlify.app',
+// 		credentials: true,
+// 		withCredentials: true,
+// 		optionsSuccessStatus: 200,
+// 	})
+// );
 
-app.set("port", process.env.PORT || 5000);
+app.set("port", process.env.PORT);
 
 sequelize
   .sync({ force: false })
