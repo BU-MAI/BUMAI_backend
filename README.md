@@ -1,4 +1,4 @@
-# BSSMBALL
+# BUMAI
 
 ## Commit Rules
 
