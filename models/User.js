@@ -19,7 +19,11 @@ class User extends Sequelize.Model {
         mbti: {
           type: Sequelize.STRING(50),
           allowNull: true,
-        }
+        },
+        refreshtoken: {
+          type: Sequelize.STRING(200),
+          allowNull: true,
+      },
       },
       {
         sequelize,

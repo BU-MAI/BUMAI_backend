@@ -2,31 +2,43 @@ const express = require("express");
 const User = require("../models/User");
 const router = express.Router();
 const bcrypt = require('bcrypt');
-const { sign } = require('jsonwebtoken');
-const { validateToken } = require('../middleware/Authmiddleware');
-const { Sequelize, Op } = require('sequelize');
+const jwt = require('jsonwebtoken');
+
 require("dotenv").config();
+const env = process.env;
+const SecretKey = env.SECRET_TOKEN_SECRET;
 
 
-//signup
 router.post('/signup', async (req, res) => {
   try {
-    // 요청으로부터 사용자 정보 추출
-    const { Id, password, name } = req.body;
+    const {Id, name, password} = req.body;
+    const overlapId = await User.findOne({ where: {Id}})
+    const overlapName = await User.findOne({ where: {name}});
+    
+    if (overlapId) { // ID 중복 확인
+      return res.status(501).send({ message: '이미 사용중인 ID입니다' });
+    }
 
-    // 패스워드 암호화
-    const hashedPassword = await bcrypt.hash(password, 10);
+    if (overlapName) { // 이름 중복 확인
+      return res.status(502).send({ message: '이미 사용중인 이름입니다' });
+    }
 
-    // 사용자 생성
-    const user = await User.create({ Id, password : hashedPassword , name });
+    const saltRounds = 10;
+    const hashPassword = await bcrypt.hash(password, saltRounds);
 
-    // 응답 반환
-    res.status(201).json({ message: '회원가입이 성공적으로 완료되었습니다.' });
+    // refreshToken 생성 (유효 시간: 1달)
+    const refreshToken = jwt.sign(
+      { userId: Id, userName: name },
+      SecretKey,
+      { expiresIn: '30d' }
+    );
+    
+    await User.create({Id, name, password: hashPassword, refreshToken});
+    res.status(201).json({ message: '회원가입 완료' });
+
   } catch (error) {
-
-    // 오류 처리
     console.error(error);
-    res.status(500).json({ message: '회원가입 도중 오류가 발생했습니다.' });
+    res.status(500).send({ message: '회원가입 오류' });
   }
 });
 
