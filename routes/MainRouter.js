@@ -3,6 +3,7 @@ const User = require("../models/User");
 const router = express.Router();
 const bcrypt = require('bcrypt');
 const jwt = require('jsonwebtoken');
+const { validateToken } = require("../middleware/AuthMiddleware"); 
 
 require("dotenv").config();
 const env = process.env;
@@ -33,7 +34,7 @@ router.post('/signup', async (req, res) => {
       { expiresIn: '30d' }
     );
     
-    await User.create({Id, name, password: hashPassword, refreshToken});
+    await User.create({Id, name, password: hashPassword, refreshtoken: refreshToken});
     res.status(201).json({ message: '회원가입 완료' });
 
   } catch (error) {
@@ -97,15 +98,12 @@ router.post('/signin', async (req, res) => {
 
 //result
 router.post('/result', validateToken, async (req, res) => {
-    const { mbti } = req.body; // JSON 요청에서 mbti 값을 추출합니다.
-    const userid =   req.user.name; // 객체로 저장한 디코딩 값을 저장합니다.
-    // console.log(mbti)
-    // console.log(userid)
-  
+    const { mbti } = req.body; 
+    const userid = req.user.userName; 
     try {
       // User 테이블에서 Id가 userid인 사용자를 조회합니다.
-      const user = await User.findOne({ where: { Id: userid } });
-
+      const user = await User.findOne({ where: { name: userid } });
+      console.log(user);
       // 조회한 사용자의 mbti 값을 업데이트합니다.
       user.mbti = mbti;
       await user.save();
