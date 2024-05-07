@@ -1,5 +1,6 @@
 const express = require("express");
 const User = require("../models/User");
+const { Sequelize } = require('sequelize');
 const router = express.Router();
 const bcrypt = require('bcrypt');
 const jwt = require('jsonwebtoken');
@@ -118,13 +119,16 @@ router.post('/result', validateToken, async (req, res) => {
 
   router.get('/rank', validateToken, async (req, res) => {
     try {
-      const users = await User.findAll({
-        attributes: ['mbti', [Sequelize.fn('COUNT', Sequelize.col('mbti')), 'count']],
+      const mbtiCounts = await User.findAll({
+        attributes: [
+          'mbti',
+          [Sequelize.fn('COUNT', Sequelize.col('mbti')), 'mbtiCount']
+        ],
         group: 'mbti',
-        order: [[Sequelize.literal('count'), 'DESC']],
+        order: [[Sequelize.literal('mbtiCount'), 'DESC']]
       });
   
-      res.status(200).json(users);
+      res.status(200).json(mbtiCounts);
     } catch (error) {
       // 에러 처리
       res.status(500).json({ message: '서버 오류가 발생했습니다.' });
